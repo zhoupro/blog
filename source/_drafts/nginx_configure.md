@@ -1,13 +1,30 @@
 # nginx 构建系统分析
 
-## 问题
-* 如何检测c编译器能正常工作
-* configure脚本是否为自动生成
-* 生成makefile文件的方法
+## 开发者工具箱
+
+* 编辑器：vim, emacs
+* 编译器：gcc
+* 调试器：gdb
+* 调优: valgrind, perf
+* 单元测试：tcl, phpunit
+* 构建工具：make, cmake
+* 胶水语言：shell
+* ...
 
 
+## nginx构建
+>使用shell语言生成make的构建文件makefile，以及ngx_auto_config.h,ngx_auto_headers.h,ngx_modules.c
 
-## redis的makefile
+## 为什么需要make
+大型项目为了方便维护和书写，拆分为大量的源文件和头文件。makefile告诉make如何编译、链接。当重新编译时只需重新编译改变的文件即可，当一个头文件修改后，依赖该头文件的源文件需要重新编译。
+
+
+## gcc参考
+> makefile中需要使用gcc进行程序的编译和链接
+
+## 精简版redis的makefile
+>我们先来分析redis的makefile,熟悉makefile基本元素
+
 ```bash
 OPTIMIZATION?=-O2
 ifeq ($(uname_S),SunOS)
@@ -81,7 +98,7 @@ CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
 * 指定编译目标名称 -o
 * 指定标准 -std=c99
 * 优化级别 -O 
-* gcc报错  -pedantic   -Wall -W  
+* gcc报错  -pedantic   -Wall -W
 * 编译  -c
 * 链接指定库 -lm -pthread
 * 调试 -g  -ggdb
@@ -92,4 +109,3 @@ CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
 * 手写(redis)
 * 通过autoconf、automake生成
 * 自己开发工具生成(nginx)
-
