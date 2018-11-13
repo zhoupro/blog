@@ -26,7 +26,9 @@ rm -rf $blog_dir/source && ln -s $source_dir/source $blog_dir/source && \
     cd $blog_dir && npm install hexo-deployer-git --save 
 
 #change theme
-[ ! -d themes/cafe ] && \
-    git clone https://github.com/giscafer/hexo-theme-cafe.git themes/cafe
-
-cp "$source_dir/etc/theme_config.yml" "$blog_dir/themes/cafe/_config.yml"
+[ ! -d themes/freemind ] && \
+    git clone https://github.com/wzpan/hexo-theme-freemind.git themes/freemind && \
+    npm install hexo-tag-bootstrap --save && \
+    npm install hexo-generator-search --save && \
+    npm install hexo-recommended-posts --save
+cp "$source_dir/etc/theme_config.yml" "$blog_dir/themes/freemind/_config.yml"
