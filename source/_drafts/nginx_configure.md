@@ -19,8 +19,52 @@
 大型项目为了方便维护和书写，拆分为大量的源文件和头文件。makefile告诉make如何编译、链接。当重新编译时只需重新编译改变的文件即可，当一个头文件修改后，依赖该头文件的源文件需要重新编译。
 
 
-## gcc参考
-> makefile中需要使用gcc进行程序的编译和链接
+## gcc常见问题
+### 约定俗成的规范：
+
+* 1,首先从源代码生成目标文件(预处理,编译,汇编)，"-c"选项表示不执行链接步骤。
+>$(CC) $(CPPFLAGS) $(CFLAGS) example.c   -c   -o example.o
+* 2,然后将目标文件连接为最终的结果(连接)，"-o"选项用于指定输出文件的名字。
+>$(CC) $(LDFLAGS) example.o   -o example
+* 有一些软件包一次完成四个步骤：
+>$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) example.c   -o example
+
+### CFLAGS 与 CXXFLAGS
+
+CFLAGS 表示用于 C 编译器的选项，CXXFLAGS 表示用于 C++ 编译器的选项。这两个变量实际上涵盖了编译和汇编两个步骤。大多数程序和库在编译时默认的优化级别是”2″(使用”-O2″选项)并且带有调试符号来编 译，也就是 CFLAGS=”-O2 -g”, CXXFLAGS=$CFLAGS 。事实上，”-O2″已经启用绝大多数安全的优化选项了。另一方面，由于大部分选项可以同时用于这两个变量，所以仅在最后讲述只能用于其中一个变量的选 项。[提醒]下面所列选项皆为非默认选项，你只要按需添加即可。
+
+### LDFLAGS
+ld用于指定链接时参数
+
+### gcc参数解释
+#### 编译
+* Wall 最常用到的编译警告, 推荐总是使用该选项
+* o  小写字母o指定结果文件名称
+* l  
+#### 预处理
+#### 调试
+#### 优化
+#### 平台相关
+
+```bash
+CC=gcc
+CFLAGS=-Wall
+LDFLAGS=-lm
+
+.PHONY: all clean
+
+all: client
+
+clean:
+    $(RM) *~ *.o client
+
+    OBJECTS=client.o
+    client: $(OBJECTS)
+        $(CC) $(CFLAGS) $(OBJECTS) -o client $(LDFLAGS)
+```
+CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
+
+ makefile中需要使用gcc进行程序的编译和链接
 
 ## 精简版redis的makefile
 >我们先来分析redis的makefile,熟悉makefile基本元素
@@ -58,38 +102,6 @@ noopt:
 	make OPTIMIZATION=""
 
 ```
-## gcc的示例
-大多数软件包遵守如下约定俗成的规范：
-* 1,首先从源代码生成目标文件(预处理,编译,汇编)，"-c"选项表示不执行链接步骤。
->$(CC) $(CPPFLAGS) $(CFLAGS) example.c   -c   -o example.o
-* 2,然后将目标文件连接为最终的结果(连接)，"-o"选项用于指定输出文件的名字。
->$(CC) $(LDFLAGS) example.o   -o example
-* 有一些软件包一次完成四个步骤：
->$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) example.c   -o example
-
-CFLAGS 与 CXXFLAGS
-CFLAGS 表示用于 C 编译器的选项，CXXFLAGS 表示用于 C++ 编译器的选项。这两个变量实际上涵盖了编译和汇编两个步骤。大多数程序和库在编译时默认的优化级别是”2″(使用”-O2″选项)并且带有调试符号来编 译，也就是 CFLAGS=”-O2 -g”, CXXFLAGS=$CFLAGS 。事实上，”-O2″已经启用绝大多数安全的优化选项了。另一方面，由于大部分选项可以同时用于这两个变量，所以仅在最后讲述只能用于其中一个变量的选 项。[提醒]下面所列选项皆为非默认选项，你只要按需添加即可。
-
-LDFLAGS
-ld用于指定链接时参数
-```bash
-CC=gcc
-CFLAGS=-Wall
-LDFLAGS=-lm
-
-.PHONY: all clean
-
-all: client
-
-clean:
-    $(RM) *~ *.o client
-
-    OBJECTS=client.o
-    client: $(OBJECTS)
-        $(CC) $(CFLAGS) $(OBJECTS) -o client $(LDFLAGS)
-```
-CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
-
 
 
 
