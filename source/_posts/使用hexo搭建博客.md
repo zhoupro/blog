@@ -5,6 +5,7 @@ tags:
 - hexo
 categories:
 - 工具
+---
 使用github page来托管我们的博客内容。文章的书写格式为markdown。使用hexo完成markdown到html的转换, 使用hexo deploy发布到github page上。
 
 ## 相关名词
